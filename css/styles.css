@@ -1,0 +1,214 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Project:	Interactive Photo Gallery
+Version:	0.0.1
+Author: 	@WebDesignerBen
+URI:		https://github.com/BenAttenborough/interactive-ghoto-gallery
+
+--------------------------------------------------------------------
+
+[Table of Contents]
+
+---GENERAL---
+---TYPOGRAPHY---
+---LAYOUT---
+---ELEMENTS---
+---CLEARFIX---
+---MEDIA QUERIES---
+	---TABLET AND ABOVE---
+
+Note: Project employs mobile-first philosophy, main styles are for
+mobile then views are progressively enchanced for tablet and 
+desktop
+
+-------------------------------------------------------------------*/
+
+/*
+ *---GENERAL---
+ */
+
+* {
+	box-sizing:border-box;
+}
+
+/*
+ *---TYPOGRAPHY---
+ */
+
+h1, h2, h3, h4, p, a {
+	font-family: 'Merriweather', serif;
+}
+
+/*
+ *---LAYOUT---
+ */
+
+ header {
+ 	width: 100%;
+ 	padding-top: 1px;
+ 	background-color: #fff;
+ 	-webkit-box-shadow: 0px 3px 5px 0px rgba(214,214,214,1);
+	-moz-box-shadow: 0px 3px 5px 0px rgba(214,214,214,1);
+	box-shadow: 0px 3px 5px 0px rgba(214,214,214,1);
+	z-index: 100;
+ }
+
+ html {
+ 	min-height: 100%;
+ }
+
+ body {
+ 	position: relative;
+ }
+
+.main-container {
+	width: 100%;
+	/* Specs said this container should be 980px.
+	 * Because we are adding 30px padding to both side of the images this width will
+	 * need to be 60px larger. Hopefully this won't cause the project to fail.
+	 */
+	max-width: 1040px;
+	margin: 0 auto;
+	background-color: #fff;
+	margin-top: 30px;
+}
+
+/* SEARCH */
+
+.search {
+	padding-top: 1px;
+ }
+
+.search__form {
+	text-align: center;
+	margin: 1em 0;
+}
+
+.search__form__input {
+	font-size: 16pt;
+}
+
+/*
+ *---ELEMENTS---
+ */
+
+ .pictures {
+ 	text-align: center;
+ 	width: 100%;
+ 	max-width: 980px;
+ 	margin: 0 auto;
+ }
+
+.pictures ul {
+	padding: 30px 60px;
+}
+
+.pictures li {
+	list-style: none;
+	margin-bottom: 60px;
+	display: inline-block;
+	width: 100%;
+}
+
+.pictures img {
+	width: 100%;
+}
+
+.media-container iframe {
+	height: 80vh;
+}
+
+/*
+ * OVERLAY
+ * 
+ * A hidden overlay displayed using jQuery when a user clicks on an image
+*/
+
+#overlay {
+	position: absolute;
+	display: none;
+	width: 100%;
+	height: 100%;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.9);
+	z-index: 200;
+}
+
+#overlay .col-prev,
+#overlay .col-next {
+	width: 20%;
+	height: 100%;
+	float: left;
+}
+
+#overlay .col-main {
+	width: 60%;
+	height: 100%;
+	float: left;
+}
+
+#overlay .col-main img {
+	/*display: block;*/
+	width: 100%;
+	margin-top: 5%;
+	/*margin: 10% auto;*/
+}
+
+#overlay .nav-btn {
+	display: block;
+	margin: auto;
+	margin-top: 100%;
+}
+
+#overlay p {
+	text-align: center;
+	color: white;
+}
+
+/* ===CLEARFIX=== */
+
+.clearfix::after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+
+/*
+ *---MEDIA QUERIES---
+ */
+
+ /*---TABLET AND ABOVE---*/
+
+@media (min-width: 500px) {
+
+	.pictures ul {
+		padding: 30px;
+	}
+
+	.pictures li {
+		width: 50%;
+		float: left;
+		padding: 0 30px;
+	}
+
+	.search__form__input  {
+		width: 460px;
+	}
+}
+
+@media (min-width: 800px) {
+
+	.pictures li {
+		width: 33.33333%;
+	}
+
+}
+
+@media (min-width: 1000px) {
+
+	.pictures li {
+		width: 25%;
+	}
+
+}
