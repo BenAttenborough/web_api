@@ -5,16 +5,18 @@
 console.log("Nav working");
 
 $('#mainmenu').click(function() {
-    console.log('Menu clicked');
     $('#menu-dropdown').slideToggle();
 });
 
 $('#spotify').click(function() {
     $('#search-value').text($(this).text());
+    $('#menu-dropdown').slideToggle();
 });
 $('#starwars').click(function() {
     $('#search-value').text($(this).text());
+    $('#menu-dropdown').slideToggle();
 });
 $('#github').click(function() {
     $('#search-value').text($(this).text());
+    $('#menu-dropdown').slideToggle();
 });
