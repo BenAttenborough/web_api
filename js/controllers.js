@@ -40,9 +40,10 @@ function getPictures(searchTerm) {
 
 function createSearch() {
 	$(".search__form__input").keyup( function() {
-		searchTerm = $(".search__form__input").val();
-		//displayPictures( getPictures(searchTerm) );
-		displayPictures( getItems(searchTerm, 'spotify') );
+        var searchType = $('#search-value').text();
+        //console.log(searchType);
+		var searchTerm = $(".search__form__input").val();
+		displayPictures( getItems(searchTerm, searchType) );
 		assignClickFunctions();
 	});
 }
@@ -192,10 +193,11 @@ function getAJAXdata() {
 	$.getJSON(api, args, callback);
 }
 
-function getItems (type, search) {
+function getItems (searchTerm, type) {
     console.log("Get Items");
-    console.log(searchTerm);
-    getAJAXdata();
+    console.log("searchTerm:" + searchTerm);
+    console.log("searchType:" + type);
+    //getAJAXdata();
     picturesHolder = [];
     if ( searchTerm === undefined ) {
         searchTerm = "";

@@ -4,5 +4,5 @@
 
 addOverlay();
 createSearch();
-displayPictures( getPictures() );
+//displayPictures( getPictures() );
 assignClickFunctions();
