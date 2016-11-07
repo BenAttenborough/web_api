@@ -13,6 +13,7 @@
  */
 
 function getPictures(searchTerm) {
+	console.log(searchTerm);
 	picturesHolder = [];
 	if ( searchTerm === undefined ) {
 		searchTerm = "";
@@ -25,6 +26,7 @@ function getPictures(searchTerm) {
 			picturesHolder.push(picture);
 		}
 	}
+	console.log(picturesHolder);
 	return picturesHolder;
 }
 
@@ -39,7 +41,8 @@ function getPictures(searchTerm) {
 function createSearch() {
 	$(".search__form__input").keyup( function() {
 		searchTerm = $(".search__form__input").val();
-		displayPictures( getPictures(searchTerm) );
+		//displayPictures( getPictures(searchTerm) );
+		displayPictures( getItems(searchTerm, 'spotify') );
 		assignClickFunctions();
 	});
 }
@@ -174,5 +177,41 @@ function assignClickFunctions() {
 		event.stopPropagation();
 		changeImage('backwards');
 	});
+}
+
+function getAJAXdata() {
+	var api = "https://api.spotify.com/v1/search";
+	var args = {
+		type : "artist",
+		q : "roadhouse"
+	};
+	var callback = function (data) {
+		console.log(data);
+
+	};
+	$.getJSON(api, args, callback);
+}
+
+function getItems (type, search) {
+    console.log("Get Items");
+    console.log(searchTerm);
+    getAJAXdata();
+    picturesHolder = [];
+    if ( searchTerm === undefined ) {
+        searchTerm = "";
+    }
+    searchTerm = searchTerm.toLowerCase();
+    for (i=0; i<pictures.length; i++) {
+        picture = pictures[i];
+        pictureAltText = pictures[i].alttext.toLowerCase();
+        if ( pictureAltText.indexOf( searchTerm ) > 0 || searchTerm === "" ) {
+            picturesHolder.push(picture);
+        }
+    }
+    console.log(picturesHolder);
+    return picturesHolder;
+}
+
+function displayAJAXdata(data) {
 
 }
