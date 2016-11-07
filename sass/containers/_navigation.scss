@@ -1,0 +1,21 @@
+nav {
+  background-color: #777;
+  color: #ffffff;
+  text-align: center;
+  #mainmenu {
+    padding: 0.5em 0;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    padding: 0.5em 0;
+    border-top: solid 2px #ffffff;
+  }
+}
+
+#menu-dropdown {
+  display: none;
+}
