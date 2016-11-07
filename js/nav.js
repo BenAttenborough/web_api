@@ -8,3 +8,13 @@ $('#mainmenu').click(function() {
     console.log('Menu clicked');
     $('#menu-dropdown').slideToggle();
 });
+
+$('#spotify').click(function() {
+    $('#search-value').text($(this).text());
+});
+$('#starwars').click(function() {
+    $('#search-value').text($(this).text());
+});
+$('#github').click(function() {
+    $('#search-value').text($(this).text());
+});
