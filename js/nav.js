@@ -12,7 +12,7 @@ $('#spotify').click(function() {
     $('#search-value').text($(this).text());
     $('#menu-dropdown').slideToggle();
 });
-$('#starwars').click(function() {
+$('#library').click(function() {
     $('#search-value').text($(this).text());
     $('#menu-dropdown').slideToggle();
 });
