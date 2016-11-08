@@ -283,14 +283,14 @@ function unbindKeyNav() {
  *	@RETURN none
  */
 
-function bindKeyNav() {
+function bindKeyNav(items, index) {
     $(document).bind( "keydown", function(event) {
         switch (event.which) {
             case 37:
-                changeImage('backwards');
+                changeImage('backwards', items, index);
                 break;
             case 39:
-                changeImage('fowards');
+                changeImage('fowards', items, index);
                 break;
             case 27:
             case 81:
@@ -309,10 +309,11 @@ function assignClickFunctions(items) {
         //console.log("Index: " + imageIndex);
         //$mediaContainer.html("<img src='img/SpotifyDefault.jpg'>");
         $(document).scrollTop(0);
-        bindKeyNav();
+
         var captionText = "Blah";
         //$caption.html(captionText);
         addOverlay(items, index);
+        bindKeyNav(items, index);
         overlayClickFunctions(items, index);
     });
 }
@@ -427,5 +428,7 @@ function changeImage(direction, items, index) {
     }
     $('#overlay').remove();
     addOverlay(items, index);
+    unbindKeyNav();
+    bindKeyNav(items, index);
     overlayClickFunctions(items, index);
 }
