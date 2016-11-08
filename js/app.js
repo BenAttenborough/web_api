@@ -76,6 +76,13 @@ function watchKeypress() {
 }
 watchKeypress();
 
+function preventSubmission() {
+    $( ".search__form" ).submit(function( event ) {
+        event.preventDefault();
+    });
+}
+preventSubmission();
+
 /**
  * Returns search type from menu
  */
@@ -113,11 +120,26 @@ function runSearch(search) {
  * @param search
  */
 function getAJAXdata(api, search) {
-    var args = {
-        type: search.filter,
-        q: search.value,
-        limit: 12
-    };
+    console.log("TYPE: " + search.type);
+    if (search.type === 'library') {
+        var args = {
+            limit: 12
+        };
+        if (search.filter === 'authors') {
+            args.author = search.value;
+        } else {
+            args.title = search.value;
+        }
+    } else {
+        if (search.type === 'spotify') {
+            var args = {
+                type: search.filter,
+                q: search.value,
+                limit: 12
+            }
+        }
+    }
+
     var callback = function (data) {
         console.log(data);
         displayDataCallback(data, search);
@@ -201,7 +223,8 @@ function getItems(data, search) {
     }
     else if (search.type === "library") {
         var titles = data.docs;
-        console.log(titles);
+        //console.log(titles);
+        //if (search.type === "titles") {
         for (var i = 0; i < titles.length; i++) {
             var title = titles[i].title;
             var coverID = titles[i].cover_i;
@@ -377,7 +400,7 @@ function addOverlay(items, index) {
     var $previousBtn = $("<div class='col-prev clearfix'><a href='#'><img src='img/previousBtn.png' class='nav-btn'></a></div>");
     var $contentDiv = $("<div class='col-main clearfix'></div>");
     var $nextBtn = $("<div class='col-next clearfix'><a href='#'><img src='img/nextBtn.png' class='nav-btn'></a></div>");
-    var $instructions = $("<p>Use arrow keys or buttons to cycle images</p>");
+    var $instructions = $("<p>Use arrow keys or buttons to cycle items</p>");
     var $mediaContainer = $("<div class='media-container'><img src='" + item.picture + "'></div>");
     var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
     var $meta = $(meta);
