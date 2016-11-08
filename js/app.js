@@ -5,6 +5,58 @@
 console.log("App js working");
 
 /**
+ * Creates HTML a dropdown filter for selected api
+ * @returns {*|jQuery|HTMLElement}
+ */
+function createSearchFilter() {
+    var api = $('select#api').val();
+    var options = "";
+    //create a dropdown menu with relevant search items
+    if (api === "spotify") {
+        options = "<option value='track'>Singles</option>";
+        options += "<option value='album'>Albums</option>";
+        options += "<option value='artist'>Artists</option>";
+    } else if (api === "library") {
+        options = "<option value='titles'>Titles</option>";
+        options += "<option value='authors'>Authors</option>";
+    }
+    $searchFilter = $(
+        "<div id='filter-content'>" +
+        "<label for='search-filter'>Search filter: </label>" +
+        "<select id='search-filter' name='filter'>" +
+        options +
+        "</select>" +
+        "</div>"
+    )
+    ;
+    return $searchFilter;
+}
+
+/**
+ * Removes existing search filter (if any) and replaces it with a new one
+ * @param searchFilter
+ */
+function addSearchFilter(searchFilter) {
+    var $filterContainer = $('#filter-container');
+    if ($('#filter-content')) {
+        $('#filter-content').remove();
+    }
+    $filterContainer.append(createSearchFilter);
+}
+addSearchFilter(createSearchFilter);
+
+/**
+ * Watches to see if api selection changes and creates new menu as appropriate
+ */
+function watchFilter() {
+    $('select#api').change(function () {
+        addSearchFilter(createSearchFilter);
+    });
+}
+watchFilter();
+
+
+/**
  * Detects keypress on search form and activate search for entered string
  */
 function watchKeypress() {
@@ -12,11 +64,13 @@ function watchKeypress() {
     $(".search__form__input").keyup(function () {
         var searchString = $(this).val();
         var searchType = getSearchType();
+        var searchFilter = getSearchFilter();
         search = {
             value: searchString,
-            type: searchType
+            type: searchType,
+            filter: searchFilter
         };
-        console.log(search);
+        //console.log(search);
         runSearch(search);
     });
 }
@@ -26,8 +80,15 @@ watchKeypress();
  * Returns search type from menu
  */
 function getSearchType() {
-    console.log("getSearchType: " + $('#search-value').text());
-    return $('#search-value').text();
+    //console.log("getSearchType: " + $('#search-value').text());
+    //console.log($('select#api').val())
+    return $('select#api').val();
+    //return $('#search-value').text();
+}
+
+function getSearchFilter() {
+    console.log($('#search-filter').val());
+    return $('#search-filter').val();
 }
 
 /**
@@ -37,11 +98,11 @@ function getSearchType() {
  */
 function runSearch(search) {
     console.log(search);
-    if (search.type === "Spotify albums") {
-        getAJAXdata("https://api.spotify.com/v1/search", "artist", search);
+    if (search.type === "spotify") {
+        getAJAXdata("https://api.spotify.com/v1/search", search);
     }
-    else if (search.type === "Open library") {
-        getAJAXdata("http://openlibrary.org/search.json", "title", search);
+    else if (search.type === "library") {
+        getAJAXdata("http://openlibrary.org/search.json", search);
     }
 }
 
@@ -49,12 +110,11 @@ function runSearch(search) {
  * Gets AJAX data and assign callback to run when data is ready
  * Called from runSearch
  * @param api
- * @param type
- * @param query
+ * @param search
  */
-function getAJAXdata(api, type, search) {
+function getAJAXdata(api, search) {
     var args = {
-        type: type,
+        type: search.filter,
         q: search.value,
         limit: 12
     };
@@ -83,37 +143,66 @@ function displayDataCallback(data, search) {
  * @returns {Array}
  */
 function getItems(data, search) {
-    console.log("Search: " + search);
     var itemsHolder = [];
-    if (search.type === "Spotify albums") {
-        var artists = data.artists.items;
-        console.log(artists);
-        for (var i = 0; i < artists.length; i++) {
-            //console.log("Name: " + artists[i].name);
+    var items;
+    if (search.type === "spotify") {
+        switch (search.filter) {
+            case 'track':
+                items = data.tracks.items;
+                break;
+            case 'album':
+                items = data.albums.items;
+                break;
+            case 'artist':
+                items = data.artists.items;
+                break;
+        }
+        for (var i = 0; i < items.length; i++) {
             var picture = null;
-            if (artists[i].images[0]) {
-                //console.log(artists[i].images[0].url);
-                picture = artists[i].images[0].url;
+            if (search.filter === 'track') {
+                if (items[i].album.images[0]) {
+                    //console.log(artists[i].images[0].url);
+                    picture = items[i].album.images[0].url;
+                } else {
+                    picture = "img/SpotifyDefault.jpg"
+                }
             } else {
-                //console.log("Error images unavailable");
-                picture = "img/SpotifyDefault.jpg"
+                if (items[i].images[0]) {
+                    //console.log(artists[i].images[0].url);
+                    picture = items[i].images[0].url;
+                } else {
+                    picture = "img/SpotifyDefault.jpg"
+                }
             }
-            var followers = artists[i].followers.total ? artists[i].followers.total : "Unknown";
-            var artist = {
-                title: artists[i].name,
+
+            var item = {
+                title: items[i].name,
                 picture: picture,
-                link: artists[i].external_urls.spotify,
+                link: items[i].external_urls.spotify,
                 meta: {
-                    followers: followers
+                    //followers: followers
                 }
             };
-            itemsHolder.push(artist);
+
+            if (search.filter === 'artist') {
+                var followers = items[i].followers.total ? items[i].followers.total : "Unknown";
+                item.meta = {
+                    followers: followers
+                }
+            }
+
+            if (search.filter === 'track') {
+                var preview = items[i].preview_url;
+                item.preview = preview;
+            }
+
+            itemsHolder.push(item);
         }
     }
-    else if (search.type === "Open library") {
+    else if (search.type === "library") {
         var titles = data.docs;
         console.log(titles);
-        for (var i = 0; i < titles.length; i++){
+        for (var i = 0; i < titles.length; i++) {
             var title = titles[i].title;
             var coverID = titles[i].cover_i;
             if (coverID) {
@@ -177,54 +266,87 @@ function displayPictures(picturesHolder, query) {
     $(".pictures li").fadeIn("slow");
 }
 
+/*
+ * 	Unbinds keydown event from document
+ * 	@PARAM none
+ *	@RETURN none
+ */
+
+function unbindKeyNav() {
+    $(document).unbind( "keydown" );
+}
+
+/*
+ * 	Binds keydown to the document to provide keyboard direction control via cursor keys,
+ *  plus escape from lightbox via escape or q keys
+ * 	@PARAM none
+ *	@RETURN none
+ */
+
+function bindKeyNav() {
+    $(document).bind( "keydown", function(event) {
+        switch (event.which) {
+            case 37:
+                changeImage('backwards');
+                break;
+            case 39:
+                changeImage('fowards');
+                break;
+            case 27:
+            case 81:
+                unbindKeyNav();
+                $("#overlay").hide();
+                break;
+        }
+    });
+}
+
 function assignClickFunctions(items) {
     $(".pictures a").click(function () {
         event.preventDefault();
         console.log("Item clicked");
-        index = $(this).parent().index();
+        var index = $(this).parent().index();
         //console.log("Index: " + imageIndex);
         //$mediaContainer.html("<img src='img/SpotifyDefault.jpg'>");
         $(document).scrollTop(0);
-        //bindKeyNav();
+        bindKeyNav();
         var captionText = "Blah";
         //$caption.html(captionText);
-        addOverlay(items[index]);
-        overlayClickFunctions();
-        //Perhaps don't need to hide in first place?
-        $("#overlay").show();
+        addOverlay(items, index);
+        overlayClickFunctions(items, index);
     });
-
-
 }
 
-function overlayClickFunctions() {
+function overlayClickFunctions(items, index) {
+    console.log("Items:" + items);
     $("#overlay").click(function () {
         // Unbind keynav when overlay closed
         console.log("Overlay clicked");
         //unbindKeyNav();
-        $(this).hide();
+        //$(this).hide();
     });
 
-    // Unbind click functions to stop rebinding of buttons
-    //$(".col-next a").unbind("click");
-    //$(".col-prev a").unbind("click");
-    //
-    //$(".col-next a").click(function (event) {
-    //    event.stopPropagation();
-    //    changeImage('fowards');
-    //});
-    //
-    //$(".col-prev a").click(function (event) {
-    //    event.stopPropagation();
-    //    changeImage('backwards');
-    //});
+     //Unbind click functions to stop rebinding of buttons
+    $(".col-next a").unbind("click");
+    $(".col-prev a").unbind("click");
+
+    $(".col-next a").click(function (event) {
+        event.stopPropagation();
+        changeImage('fowards', items, index);
+    });
+
+    $(".col-prev a").click(function (event) {
+        event.stopPropagation();
+        console.log("Items:" + items);
+        changeImage('backwards', items, index);
+    });
 }
 
 function getMeta(item) {
     var metaString = "";
     var propTitle = "";
     if (item.meta) {
-        console.log (item.meta);
+        console.log(item.meta);
         for (var property in item.meta) {
             if (item.meta.hasOwnProperty(property)) {
                 console.log(property);
@@ -237,8 +359,18 @@ function getMeta(item) {
     return metaString;
 }
 
-function addOverlay(item) {
+function getPreview(item) {
+    var previewString = "";
+    if (item.preview) {
+        previewString = '<iframe id="song-preview" src="' + item.preview + '" width="100%" height="100" frameborder="0" allowtransparency="true"></iframe>';
+    }
+    return previewString;
+}
+
+function addOverlay(items, index) {
+    var item = items[index];
     var meta = getMeta(item);
+    var preview = getPreview(item);
 
     var $overlay = $("<div id='overlay' class='clearfix'></div>");
     var $previousBtn = $("<div class='col-prev clearfix'><a href='#'><img src='img/previousBtn.png' class='nav-btn'></a></div>");
@@ -248,6 +380,7 @@ function addOverlay(item) {
     var $mediaContainer = $("<div class='media-container'><img src='" + item.picture + "'></div>");
     var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
     var $meta = $(meta);
+    var $preview = $(preview);
     var $replacementImage;
     var $replacementAltText;
     var fullHeight;
@@ -259,6 +392,7 @@ function addOverlay(item) {
     $contentDiv.append($mediaContainer);
     $contentDiv.append($caption);
     $contentDiv.append($meta);
+    //$contentDiv.append($preview);
     $overlay.append($previousBtn);
     $overlay.append($contentDiv);
     $overlay.append($nextBtn);
@@ -266,4 +400,32 @@ function addOverlay(item) {
     console.log("Height: " + $("body").height());
     fullHeight = $("body").height();
     $overlay.height(fullHeight);
+}
+
+/*
+ * 	Fetches the next bit of media based on direction arrow clicked
+ * 	@PARAM direction {string} the direction of the next media to fetch
+ *	@RETURN none
+ */
+
+function changeImage(direction, items, index) {
+    event.preventDefault();
+    console.log('changing item');
+    console.log("Change:" + items);
+    if (direction === 'backwards') {
+        if (index>0) {
+            index--;
+        } else {
+            index = items.length -1;
+        }
+    } else {
+        if (index < items.length -1) {
+            index++;
+        } else {
+            index = 0;
+        }
+    }
+    $('#overlay').remove();
+    addOverlay(items, index);
+    overlayClickFunctions(items, index);
 }

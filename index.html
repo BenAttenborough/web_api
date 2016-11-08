@@ -13,31 +13,25 @@
 
   <body>
     <header>
-      <nav>
-        <div id="mainmenu">
-          <p>&#9776; MENU</p>
-        </div>
-        <ul id="menu-dropdown">
-          <li id="spotify">Spotify albums</li>
-          <li id="library">Open library</li>
-          <li id="github">Github project</li>
-        </ul>
-      </nav>
+      <!--<nav>-->
+        <!--<div id="mainmenu">-->
+          <!--<p>&#9776; MENU</p>-->
+        <!--</div>-->
+        <!--<ul id="menu-dropdown">-->
+          <!--<li id="spotify">Spotify albums</li>-->
+          <!--<li id="library">Open library</li>-->
+          <!--<li id="github">Github project</li>-->
+        <!--</ul>-->
+      <!--</nav>-->
 
       <div class="search-selection">
         <h3>Currently searching for: <span id="search-value">Please select</span></h3>
         <label for="api">API:</label>
         <select id="api" name="user_job">
-          <optgroup label="spotify">
-            <option value="singles">Singles</option>
-            <option value="albums">Albums</option>
-            <option value="artists">Artists</option>
-          </optgroup>
-          <optgroup label="library">
-            <option value="title">Titles</option>
-            <option value="author">Authors</option>
-          </optgroup>
+            <option value="spotify">Spotify</option>
+            <option value="library">Library</option>
         </select>
+        <div id="filter-container"></div>
       </div>
 
       <div class="search clearfix">
