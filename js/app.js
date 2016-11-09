@@ -109,7 +109,7 @@ function runSearch(search) {
         getAJAXdata("https://api.spotify.com/v1/search", search);
     }
     else if (search.type === "library") {
-        getAJAXdata("http://openlibrary.org/search.json", search);
+        getAJAXdata("https://openlibrary.org/search.json", search);
     }
 }
 
