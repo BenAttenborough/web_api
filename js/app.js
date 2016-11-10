@@ -399,6 +399,17 @@ function bindKeyNav(items, index) {
     });
 }
 
+function unbindCloseNavBttn() {
+    $('#closeBtn').unbind( "click" );
+}
+
+function bindCloseNavBttn() {
+    $('#closeBtn').click(function() {
+        $("#overlay").hide();
+        unbindCloseNavBttn();
+    });
+}
+
 function assignClickFunctions(items) {
     $(".pictures a").click(function () {
         event.preventDefault();
@@ -412,6 +423,7 @@ function assignClickFunctions(items) {
         //$caption.html(captionText);
         addOverlay(items, index);
         bindKeyNav(items, index);
+        bindCloseNavBttn();
         overlayClickFunctions(items, index);
     });
 }
@@ -439,6 +451,8 @@ function overlayClickFunctions(items, index) {
         console.log("Items:" + items);
         changeImage('backwards', items, index);
     });
+    unbindCloseNavBttn();
+    bindCloseNavBttn();
 }
 
 function getMeta(item) {
@@ -475,9 +489,10 @@ function addOverlay(items, index) {
     var $previousBtn = $("<div class='col-prev clearfix'><a href='#'><img src='img/PreviousBtn.png' class='nav-btn'></a></div>");
     var $contentDiv = $("<div class='col-main clearfix'></div>");
     var $nextBtn = $("<div class='col-next clearfix'><a href='#'><img src='img/nextBtn.png' class='nav-btn'></a></div>");
-    var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape to exit</p>");
+    var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape or click the X to exit</p>");
+    var $closeButton = $("<div id='closeBtn'>X</div>");
     var $mediaContainer = $("<div class='media-container'><img src='" + item.picture + "'></div>");
-    var $mediaContainer = $("<div class='media-container' style='background: url(" + item.picture + ") no-repeat center; background-size:contain'></div>");
+    var $mediaContainer = $("<div class='media-container' style='background: url(" + item.picture + ") no-repeat top; background-size:contain'></div>");
     var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
     var $meta = $(meta);
     var $preview = $(preview);
@@ -489,6 +504,7 @@ function addOverlay(items, index) {
     //    $('#overlay').remove();
     //}
     $contentDiv.append($instructions);
+    $mediaContainer.append($closeButton);
     $contentDiv.append($mediaContainer);
     $contentDiv.append($caption);
     $contentDiv.append($meta);

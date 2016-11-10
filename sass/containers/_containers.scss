@@ -151,6 +151,24 @@ body {
   margin-bottom: 0.5em;
 }
 
+#closeBtn {
+  background-color: #333333;
+  color: white;
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+  border-radius: 100%;
+  border: 3px solid white;
+  height: 1.5em;
+  width: 1.5em;
+  float: right;
+  text-align: center;
+  padding: auto;
+  padding-top: 3px;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.5em 0.5em 0 0;
+}
+
 @media (min-width: 500px) {
 
   .pictures ul {
