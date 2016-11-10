@@ -215,7 +215,67 @@ function getItems(data, search) {
 
             if (search.filter === 'track') {
                 var preview = items[i].preview_url;
+                var artistURL;
+                var artistName;
+                var artistString = "";
+
+                if ("artists" in items[i] && items[i].artists.constructor === Array) {
+                    console.log(items[i].artists.length);
+                    for (var a=0; a<items[i].artists.length; a++) {
+                        console.log("i: " + i + "a: " + a);
+                        artistURL = items[i].artists[a].id;
+                        artistName = items[i].artists[a].name;
+                        if (a>0) {
+                            artistString += " and ";
+                        }
+                        artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
+                    }
+                } else {
+                    artistString = "Unknown";
+                }
                 item.preview = preview;
+                item.meta = {
+                    artist: artistString
+                };
+            }
+
+            if (search.filter === 'track' || 'album') {
+                var preview = items[i].preview_url;
+                var artistURL;
+                var artistName;
+                var artistString = "";
+
+                if ("artists" in items[i] && items[i].artists.constructor === Array) {
+                    for (var a=0; a<items[i].artists.length; a++) {
+                        artistURL = items[i].artists[a].id;
+                        artistName = items[i].artists[a].name;
+                        if (a>0) {
+                            artistString += " and ";
+                        }
+                        artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
+                    }
+                } else {
+                    artistString = "Unknown";
+                }
+                item.preview = preview;
+                item.meta.artist = artistString;
+            }
+
+            if (search.filter === 'album') {
+                var market;
+                var marketString = "";
+                if ("available_markets" in items[i] && items[i].available_markets.constructor === Array) {
+                    for (var a=0; a<items[i].available_markets.length; a++) {
+                        market = items[i].available_markets[a];
+                        if (a>0) {
+                            marketString += ", ";
+                        }
+                        marketString += market;
+                    }
+                } else {
+                    marketString = "Unknown";
+                }
+                item.meta.Markets = marketString;
             }
 
             itemsHolder.push(item);
@@ -400,7 +460,7 @@ function addOverlay(items, index) {
     var $previousBtn = $("<div class='col-prev clearfix'><a href='#'><img src='img/previousBtn.png' class='nav-btn'></a></div>");
     var $contentDiv = $("<div class='col-main clearfix'></div>");
     var $nextBtn = $("<div class='col-next clearfix'><a href='#'><img src='img/nextBtn.png' class='nav-btn'></a></div>");
-    var $instructions = $("<p>Use arrow keys or buttons to cycle items</p>");
+    var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape to exit</p>");
     var $mediaContainer = $("<div class='media-container'><img src='" + item.picture + "'></div>");
     var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
     var $meta = $(meta);
