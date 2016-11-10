@@ -472,7 +472,7 @@ function addOverlay(items, index) {
     var preview = getPreview(item);
 
     var $overlay = $("<div id='overlay' class='clearfix'></div>");
-    var $previousBtn = $("<div class='col-prev clearfix'><a href='#'><img src='img/previousBtn.png' class='nav-btn'></a></div>");
+    var $previousBtn = $("<div class='col-prev clearfix'><a href='#'><img src='img/PreviousBtn.png' class='nav-btn'></a></div>");
     var $contentDiv = $("<div class='col-main clearfix'></div>");
     var $nextBtn = $("<div class='col-next clearfix'><a href='#'><img src='img/nextBtn.png' class='nav-btn'></a></div>");
     var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape to exit</p>");

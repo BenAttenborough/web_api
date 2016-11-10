@@ -82,7 +82,7 @@ body {
 }
 
 .media-container {
-  height: 50%;
+  height: 50vh;
 }
 
 .item-image {
@@ -120,6 +120,7 @@ body {
   width: 20%;
   height: 100%;
   float: left;
+  padding-top: 20vh;
 }
 
 #overlay .col-main {
