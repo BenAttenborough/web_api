@@ -21,7 +21,10 @@ body {
   //background-color: red;
   margin: 0;
   height: 100%;
-  //min-height: 100vh;
+}
+
+#wrap {
+  min-height: 100vh;
 }
 
 .main-container {
@@ -78,8 +81,8 @@ body {
   width: 100%;
 }
 
-.media-container iframe {
-  height: 80vh;
+.media-container {
+  height: 50%;
 }
 
 .item-image {

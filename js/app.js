@@ -462,6 +462,7 @@ function addOverlay(items, index) {
     var $nextBtn = $("<div class='col-next clearfix'><a href='#'><img src='img/nextBtn.png' class='nav-btn'></a></div>");
     var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape to exit</p>");
     var $mediaContainer = $("<div class='media-container'><img src='" + item.picture + "'></div>");
+    var $mediaContainer = $("<div class='media-container' style='background: url(" + item.picture + ") no-repeat center; background-size:contain'></div>");
     var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
     var $meta = $(meta);
     var $preview = $(preview);
