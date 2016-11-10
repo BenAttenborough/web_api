@@ -27,8 +27,7 @@ function createSearchFilter() {
         options +
         "</select>" +
         "</div>"
-    )
-    ;
+    );
     return $searchFilter;
 }
 
@@ -42,6 +41,7 @@ function addSearchFilter(searchFilter) {
         $('#filter-content').remove();
     }
     $filterContainer.append(createSearchFilter);
+    watchUserFilter();
 }
 addSearchFilter(createSearchFilter);
 
@@ -50,11 +50,34 @@ addSearchFilter(createSearchFilter);
  */
 function watchFilter() {
     $('select#api').change(function () {
-        addSearchFilter(createSearchFilter);
+        var filter = addSearchFilter(createSearchFilter);
+        //console.log("Menu changed");
+        var searchString = $(".search__form__input").val();
+        var userSearch = getUserSearch(searchString);
+        runSearch(userSearch);
     });
 }
 watchFilter();
 
+function watchUserFilter() {
+    $('#search-filter').change(function () {
+        //console.log("Menu changed");
+        var searchString = $(".search__form__input").val();
+        var userSearch = getUserSearch(searchString);
+        runSearch(userSearch);
+    });
+}
+
+function getUserSearch(searchString) {
+    var searchType = getSearchType();
+    var searchFilter = getSearchFilter();
+    search = {
+        value: searchString,
+        type: searchType,
+        filter: searchFilter
+    };
+    return search;
+}
 
 /**
  * Detects keypress on search form and activate search for entered string
@@ -62,15 +85,7 @@ watchFilter();
 function watchKeypress() {
     var search = "";
     $(".search__form__input").keyup(function () {
-        var searchString = $(this).val();
-        var searchType = getSearchType();
-        var searchFilter = getSearchFilter();
-        search = {
-            value: searchString,
-            type: searchType,
-            filter: searchFilter
-        };
-        //console.log(search);
+        search = getUserSearch($(this).val());
         runSearch(search);
     });
 }
