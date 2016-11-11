@@ -452,13 +452,13 @@ function overlayClickFunctions(items, index) {
 
     $(".col-next a").click(function (event) {
         event.stopPropagation();
-        changeImage('fowards', items, index);
+        changeImage(event, 'forwards', items, index);
     });
 
     $(".col-prev a").click(function (event) {
         event.stopPropagation();
         //console.log("Items:" + items);
-        changeImage('backwards', items, index);
+        changeImage(event, 'backwards', items, index);
     });
     unbindCloseNavBttn();
     bindCloseNavBttn();
@@ -528,7 +528,7 @@ function addOverlay(items, index) {
  *	@RETURN none
  */
 
-function changeImage(direction, items, index) {
+function changeImage(event, direction, items, index) {
     event.preventDefault();
     //console.log('changing item');
     //console.log("Change:" + items);
