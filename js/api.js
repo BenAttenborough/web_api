@@ -408,16 +408,16 @@ function unbindCloseNavBttn() {
 }
 
 function bindCloseNavBttn() {
-    $('#closeBtn').click(function () {
+    $('#closeBtn').click(function (event) {
         $("#overlay").hide();
         unbindCloseNavBttn();
     });
 }
 
 function assignClickFunctions(items) {
-    $(".pictures a").click(function () {
+    $(".pictures a").click(function (event) {
         event.preventDefault();
-        //console.log("Item clicked");
+        console.log("Item clicked");
         var index = $(this).parent().index();
         //console.log("Index: " + imageIndex);
         //$mediaContainer.html("<img src='img/SpotifyDefault.jpg'>");
@@ -434,7 +434,7 @@ function assignClickFunctions(items) {
 
 function overlayClickFunctions(items, index) {
     //console.log("Items:" + items);
-    $("#overlay").click(function () {
+    $("#overlay").click(function (event) {
         // Unbind keynav when overlay closed
         //console.log("Overlay clicked");
         //unbindKeyNav();
@@ -447,13 +447,13 @@ function overlayClickFunctions(items, index) {
 
     $(".col-next a").click(function (event) {
         event.stopPropagation();
-        changeImage('fowards', items, index);
+        changeImage(event, 'forwards', items, index);
     });
 
     $(".col-prev a").click(function (event) {
         event.stopPropagation();
         //console.log("Items:" + items);
-        changeImage('backwards', items, index);
+        changeImage(event, 'backwards', items, index);
     });
     unbindCloseNavBttn();
     bindCloseNavBttn();
@@ -523,7 +523,7 @@ function addOverlay(items, index) {
  *	@RETURN none
  */
 
-function changeImage(direction, items, index) {
+function changeImage(event, direction, items, index) {
     event.preventDefault();
     //console.log('changing item');
     //console.log("Change:" + items);
