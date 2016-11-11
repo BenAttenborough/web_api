@@ -1,8 +1,8 @@
 /**
  * Created by ben on 07/11/2016.
+ *
+ * App tested on MAC: Chromes, Firefox and Safari
  */
-
-//console.log("App js working");
 
 /**
  * Creates HTML a dropdown filter for selected api

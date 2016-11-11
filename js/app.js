@@ -5,9 +5,9 @@ void 0!==c?null===c?void r.removeAttr(a,b):e&&"set"in e&&void 0!==(d=e.set(a,c,b
 
 /**
  * Created by ben on 07/11/2016.
+ *
+ * App tested on MAC: Chromes, Firefox and Safari
  */
-
-//console.log("App js working");
 
 /**
  * Creates HTML a dropdown filter for selected api
