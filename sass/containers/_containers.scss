@@ -24,7 +24,7 @@ body {
 }
 
 #wrap {
-  min-height: 100vh;
+  min-height: calc(100vh - 6em);
 }
 
 .main-container {
@@ -167,6 +167,11 @@ body {
   font-size: 2em;
   font-weight: bold;
   margin: 0.5em 0.5em 0 0;
+}
+
+#sticky-footer {
+  text-align: center;
+  padding: 1em 0;
 }
 
 @media (min-width: 500px) {
