@@ -2,7 +2,7 @@
  * Created by ben on 07/11/2016.
  */
 
-console.log("App js working");
+//console.log("App js working");
 
 /**
  * Creates HTML a dropdown filter for selected api
@@ -92,7 +92,7 @@ function watchKeypress() {
 watchKeypress();
 
 function preventSubmission() {
-    $( ".search__form" ).submit(function( event ) {
+    $(".search__form").submit(function (event) {
         event.preventDefault();
     });
 }
@@ -109,7 +109,7 @@ function getSearchType() {
 }
 
 function getSearchFilter() {
-    console.log($('#search-filter').val());
+    //console.log($('#search-filter').val());
     return $('#search-filter').val();
 }
 
@@ -119,7 +119,7 @@ function getSearchFilter() {
  * @param search
  */
 function runSearch(search) {
-    console.log(search);
+    //console.log(search);
     if (search.type === "spotify") {
         getAJAXdata("https://api.spotify.com/v1/search", search);
     }
@@ -135,9 +135,9 @@ function runSearch(search) {
  * @param search
  */
 function getAJAXdata(api, search) {
-    console.log("TYPE: " + search.type);
+    var args = {};
     if (search.type === 'library') {
-        var args = {
+        args = {
             limit: 12
         };
         if (search.filter === 'authors') {
@@ -147,16 +147,16 @@ function getAJAXdata(api, search) {
         }
     } else {
         if (search.type === 'spotify') {
-            var args = {
+            args = {
                 type: search.filter,
                 q: search.value,
                 limit: 12
-            }
+            };
         }
     }
 
     var callback = function (data) {
-        console.log(data);
+        //console.log(data);
         displayDataCallback(data, search);
     };
     $.getJSON(api, args, callback);
@@ -168,7 +168,7 @@ function getAJAXdata(api, search) {
  * @param search
  */
 function displayDataCallback(data, search) {
-    console.log(data);
+    //console.log(data);
     var items = getItems(data, search);
     displayPictures(items, search.value);
     assignClickFunctions(items);
@@ -182,6 +182,14 @@ function displayDataCallback(data, search) {
 function getItems(data, search) {
     var itemsHolder = [];
     var items;
+    var preview;
+    var artistURL;
+    var artistName;
+    var artistString;
+    var picture;
+    var i;
+    var a;
+
     if (search.type === "spotify") {
         switch (search.filter) {
             case 'track':
@@ -194,21 +202,21 @@ function getItems(data, search) {
                 items = data.artists.items;
                 break;
         }
-        for (var i = 0; i < items.length; i++) {
-            var picture = null;
+        for (i = 0; i < items.length; i++) {
+            picture = null;
             if (search.filter === 'track') {
                 if (items[i].album.images[0]) {
                     //console.log(artists[i].images[0].url);
                     picture = items[i].album.images[0].url;
                 } else {
-                    picture = "img/SpotifyDefault.jpg"
+                    picture = "img/SpotifyDefault.jpg";
                 }
             } else {
                 if (items[i].images[0]) {
                     //console.log(artists[i].images[0].url);
                     picture = items[i].images[0].url;
                 } else {
-                    picture = "img/SpotifyDefault.jpg"
+                    picture = "img/SpotifyDefault.jpg";
                 }
             }
 
@@ -225,22 +233,20 @@ function getItems(data, search) {
                 var followers = items[i].followers.total ? items[i].followers.total : "Unknown";
                 item.meta = {
                     followers: followers
-                }
+                };
             }
 
             if (search.filter === 'track') {
-                var preview = items[i].preview_url;
-                var artistURL;
-                var artistName;
-                var artistString = "";
+                preview = items[i].preview_url;
+                artistString = "";
 
                 if ("artists" in items[i] && items[i].artists.constructor === Array) {
-                    console.log(items[i].artists.length);
-                    for (var a=0; a<items[i].artists.length; a++) {
-                        console.log("i: " + i + "a: " + a);
+                    //console.log(items[i].artists.length);
+                    for (a = 0; a < items[i].artists.length; a++) {
+                        //console.log("i: " + i + "a: " + a);
                         artistURL = items[i].artists[a].id;
                         artistName = items[i].artists[a].name;
-                        if (a>0) {
+                        if (a > 0) {
                             artistString += " and ";
                         }
                         artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
@@ -255,16 +261,14 @@ function getItems(data, search) {
             }
 
             if (search.filter === 'track' || 'album') {
-                var preview = items[i].preview_url;
-                var artistURL;
-                var artistName;
-                var artistString = "";
+                preview = items[i].preview_url;
+                artistString = "";
 
                 if ("artists" in items[i] && items[i].artists.constructor === Array) {
-                    for (var a=0; a<items[i].artists.length; a++) {
+                    for (a = 0; a < items[i].artists.length; a++) {
                         artistURL = items[i].artists[a].id;
                         artistName = items[i].artists[a].name;
-                        if (a>0) {
+                        if (a > 0) {
                             artistString += " and ";
                         }
                         artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
@@ -280,9 +284,9 @@ function getItems(data, search) {
                 var market;
                 var marketString = "";
                 if ("available_markets" in items[i] && items[i].available_markets.constructor === Array) {
-                    for (var a=0; a<items[i].available_markets.length; a++) {
+                    for (a = 0; a < items[i].available_markets.length; a++) {
                         market = items[i].available_markets[a];
-                        if (a>0) {
+                        if (a > 0) {
                             marketString += ", ";
                         }
                         marketString += market;
@@ -300,13 +304,13 @@ function getItems(data, search) {
         var titles = data.docs;
         //console.log(titles);
         //if (search.type === "titles") {
-        for (var i = 0; i < titles.length; i++) {
+        for (i = 0; i < titles.length; i++) {
             var title = titles[i].title;
             var coverID = titles[i].cover_i;
             if (coverID) {
-                var picture = "http://covers.openlibrary.org/b/ID/" + coverID + "-L.jpg";
+                picture = "http://covers.openlibrary.org/b/ID/" + coverID + "-L.jpg";
             } else {
-                var picture = "img/SpotifyDefault.jpg";
+                picture = "img/SpotifyDefault.jpg";
             }
             var link = "https://openlibrary.org" + titles[i].key;
             var author = Array.isArray(titles[i].author_name) ? titles[i].author_name[0] : "Unknown";
@@ -324,7 +328,6 @@ function getItems(data, search) {
         }
     }
     return itemsHolder;
-    //console.log("artists: " + artistsHolder);
 }
 
 /**
@@ -333,7 +336,8 @@ function getItems(data, search) {
  */
 function displayPictures(picturesHolder, query) {
     var html = "<ul>";
-    for (var index in picturesHolder) {
+
+    for(var index = 0; index<picturesHolder.length; index++) {
         html += "<li style='display:none'>";
         html += "<a href='" + picturesHolder[index].picture + "'>";
         html += "   <div class='item-image' style='background-image: url(" + picturesHolder[index].picture + ")'>";
@@ -371,7 +375,7 @@ function displayPictures(picturesHolder, query) {
  */
 
 function unbindKeyNav() {
-    $(document).unbind( "keydown" );
+    $(document).unbind("keydown");
 }
 
 /*
@@ -382,7 +386,7 @@ function unbindKeyNav() {
  */
 
 function bindKeyNav(items, index) {
-    $(document).bind( "keydown", function(event) {
+    $(document).bind("keydown", function (event) {
         switch (event.which) {
             case 37:
                 changeImage('backwards', items, index);
@@ -400,11 +404,11 @@ function bindKeyNav(items, index) {
 }
 
 function unbindCloseNavBttn() {
-    $('#closeBtn').unbind( "click" );
+    $('#closeBtn').unbind("click");
 }
 
 function bindCloseNavBttn() {
-    $('#closeBtn').click(function() {
+    $('#closeBtn').click(function () {
         $("#overlay").hide();
         unbindCloseNavBttn();
     });
@@ -413,7 +417,7 @@ function bindCloseNavBttn() {
 function assignClickFunctions(items) {
     $(".pictures a").click(function () {
         event.preventDefault();
-        console.log("Item clicked");
+        //console.log("Item clicked");
         var index = $(this).parent().index();
         //console.log("Index: " + imageIndex);
         //$mediaContainer.html("<img src='img/SpotifyDefault.jpg'>");
@@ -429,15 +433,15 @@ function assignClickFunctions(items) {
 }
 
 function overlayClickFunctions(items, index) {
-    console.log("Items:" + items);
+    //console.log("Items:" + items);
     $("#overlay").click(function () {
         // Unbind keynav when overlay closed
-        console.log("Overlay clicked");
+        //console.log("Overlay clicked");
         //unbindKeyNav();
         //$(this).hide();
     });
 
-     //Unbind click functions to stop rebinding of buttons
+    //Unbind click functions to stop rebinding of buttons
     $(".col-next a").unbind("click");
     $(".col-prev a").unbind("click");
 
@@ -448,7 +452,7 @@ function overlayClickFunctions(items, index) {
 
     $(".col-prev a").click(function (event) {
         event.stopPropagation();
-        console.log("Items:" + items);
+        //console.log("Items:" + items);
         changeImage('backwards', items, index);
     });
     unbindCloseNavBttn();
@@ -459,11 +463,11 @@ function getMeta(item) {
     var metaString = "";
     var propTitle = "";
     if (item.meta) {
-        console.log(item.meta);
+        //console.log(item.meta);
         for (var property in item.meta) {
             if (item.meta.hasOwnProperty(property)) {
-                console.log(property);
-                console.log(item.meta[property]);
+                //console.log(property);
+                //console.log(item.meta[property]);
                 propTitle = property.charAt(0).toUpperCase() + property.slice(1);
                 metaString += "<p>" + propTitle + ": " + item.meta[property] + "</p>";
             }
@@ -491,7 +495,6 @@ function addOverlay(items, index) {
     var $nextBtn = $("<div class='col-next clearfix'><a href='#'><img src='img/nextBtn.png' class='nav-btn'></a></div>");
     var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape or click the X to exit</p>");
     var $closeButton = $("<div id='closeBtn'>X</div>");
-    var $mediaContainer = $("<div class='media-container'><img src='" + item.picture + "'></div>");
     var $mediaContainer = $("<div class='media-container' style='background: url(" + item.picture + ") no-repeat top; background-size:contain'></div>");
     var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
     var $meta = $(meta);
@@ -500,9 +503,6 @@ function addOverlay(items, index) {
     var $replacementAltText;
     var fullHeight;
 
-    //if ($('#overlay')) {
-    //    $('#overlay').remove();
-    //}
     $contentDiv.append($instructions);
     $mediaContainer.append($closeButton);
     $contentDiv.append($mediaContainer);
@@ -513,7 +513,6 @@ function addOverlay(items, index) {
     $overlay.append($contentDiv);
     $overlay.append($nextBtn);
     $("body").prepend($overlay);
-    console.log("Height: " + $("body").height());
     fullHeight = $("body").height();
     $overlay.height(fullHeight);
 }
@@ -526,16 +525,16 @@ function addOverlay(items, index) {
 
 function changeImage(direction, items, index) {
     event.preventDefault();
-    console.log('changing item');
-    console.log("Change:" + items);
+    //console.log('changing item');
+    //console.log("Change:" + items);
     if (direction === 'backwards') {
-        if (index>0) {
+        if (index > 0) {
             index--;
         } else {
-            index = items.length -1;
+            index = items.length - 1;
         }
     } else {
-        if (index < items.length -1) {
+        if (index < items.length - 1) {
             index++;
         } else {
             index = 0;
