@@ -158,7 +158,7 @@ function getAJAXdata(api, search) {
     }
 
     var callback = function (data) {
-        //console.log(data);
+        console.log(data);
         displayDataCallback(data, search);
     };
     //console.log("Api: " + api + " Args: " + args);
@@ -181,11 +181,11 @@ function displayDataCallback(data, search) {
 function getAllItems(data, search) {
     switch (search.type) {
         case "spotify":
-            console.log("Get spotify");
+            //console.log("Get spotify");
             return getSpotifyData(data, search);
             break;
         case "library":
-            console.log("Get library");
+            //console.log("Get library");
             return getLibraryData(data, search);
             break;
         default:
@@ -244,8 +244,10 @@ function getSpotifyData(data, search) {
 
         if (search.filter === 'artist') {
             var followers = items[i].followers.total ? items[i].followers.total : "Unknown";
+            var popularity = items[i].popularity ? items[i].popularity : "unknown";
             item.meta = {
-                followers: followers
+                followers: followers,
+                popularity: popularity
             };
         }
 
@@ -267,13 +269,17 @@ function getSpotifyData(data, search) {
             } else {
                 artistString = "Unknown";
             }
+            var albumName = items[i].album.name;
+            var albumHref = items[i].album.external_urls.spotify;
+            var albumString = "<a href='" + albumHref + "'>" + albumName + "</a>";
             item.preview = preview;
             item.meta = {
-                artist: artistString
+                artist: artistString,
+                album: albumString,
             };
         }
 
-        if (search.filter === 'track' || 'album') {
+        if (search.filter === 'track' || search.filter === 'album') {
             preview = items[i].preview_url;
             artistString = "";
 
