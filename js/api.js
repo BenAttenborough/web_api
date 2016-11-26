@@ -4,6 +4,8 @@
  * App tested on MAC: Chromes, Firefox and Safari
  */
 
+console.log("working");
+
 /**
  * Creates HTML a dropdown filter for selected api
  * @returns {*|jQuery|HTMLElement}
@@ -159,6 +161,7 @@ function getAJAXdata(api, search) {
         //console.log(data);
         displayDataCallback(data, search);
     };
+    //console.log("Api: " + api + " Args: " + args);
     $.getJSON(api, args, callback);
 }
 
@@ -169,17 +172,28 @@ function getAJAXdata(api, search) {
  */
 function displayDataCallback(data, search) {
     //console.log(data);
-    var items = getItems(data, search);
+    //var items = getItems(data, search);
+    var items = getAllItems(data, search);
     displayPictures(items, search.value);
     assignClickFunctions(items);
 }
 
-/**
- * Takes raw ajax data and converts it into usable array
- * @param data
- * @returns {Array}
- */
-function getItems(data, search) {
+function getAllItems(data, search) {
+    switch (search.type) {
+        case "spotify":
+            console.log("Get spotify");
+            return getSpotifyData(data, search);
+            break;
+        case "library":
+            console.log("Get library");
+            return getLibraryData(data, search);
+            break;
+        default:
+            console.log("Error: api " + search.type + " Not recognised")
+    }
+}
+
+function getSpotifyData(data, search) {
     var itemsHolder = [];
     var items;
     var preview;
@@ -190,142 +204,145 @@ function getItems(data, search) {
     var i;
     var a;
 
-    if (search.type === "spotify") {
-        switch (search.filter) {
-            case 'track':
-                items = data.tracks.items;
-                break;
-            case 'album':
-                items = data.albums.items;
-                break;
-            case 'artist':
-                items = data.artists.items;
-                break;
-        }
-        for (i = 0; i < items.length; i++) {
-            picture = null;
-            if (search.filter === 'track') {
-                if (items[i].album.images[0]) {
-                    //console.log(artists[i].images[0].url);
-                    picture = items[i].album.images[0].url;
-                } else {
-                    picture = "img/SpotifyDefault.jpg";
-                }
-            } else {
-                if (items[i].images[0]) {
-                    //console.log(artists[i].images[0].url);
-                    picture = items[i].images[0].url;
-                } else {
-                    picture = "img/SpotifyDefault.jpg";
-                }
-            }
-
-            var item = {
-                title: items[i].name,
-                picture: picture,
-                link: items[i].external_urls.spotify,
-                meta: {
-                    //followers: followers
-                }
-            };
-
-            if (search.filter === 'artist') {
-                var followers = items[i].followers.total ? items[i].followers.total : "Unknown";
-                item.meta = {
-                    followers: followers
-                };
-            }
-
-            if (search.filter === 'track') {
-                preview = items[i].preview_url;
-                artistString = "";
-
-                if ("artists" in items[i] && items[i].artists.constructor === Array) {
-                    //console.log(items[i].artists.length);
-                    for (a = 0; a < items[i].artists.length; a++) {
-                        //console.log("i: " + i + "a: " + a);
-                        artistURL = items[i].artists[a].id;
-                        artistName = items[i].artists[a].name;
-                        if (a > 0) {
-                            artistString += " and ";
-                        }
-                        artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
-                    }
-                } else {
-                    artistString = "Unknown";
-                }
-                item.preview = preview;
-                item.meta = {
-                    artist: artistString
-                };
-            }
-
-            if (search.filter === 'track' || 'album') {
-                preview = items[i].preview_url;
-                artistString = "";
-
-                if ("artists" in items[i] && items[i].artists.constructor === Array) {
-                    for (a = 0; a < items[i].artists.length; a++) {
-                        artistURL = items[i].artists[a].id;
-                        artistName = items[i].artists[a].name;
-                        if (a > 0) {
-                            artistString += " and ";
-                        }
-                        artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
-                    }
-                } else {
-                    artistString = "Unknown";
-                }
-                item.preview = preview;
-                item.meta.artist = artistString;
-            }
-
-            if (search.filter === 'album') {
-                var market;
-                var marketString = "";
-                if ("available_markets" in items[i] && items[i].available_markets.constructor === Array) {
-                    for (a = 0; a < items[i].available_markets.length; a++) {
-                        market = items[i].available_markets[a];
-                        if (a > 0) {
-                            marketString += ", ";
-                        }
-                        marketString += market;
-                    }
-                } else {
-                    marketString = "Unknown";
-                }
-                item.meta.Markets = marketString;
-            }
-
-            itemsHolder.push(item);
-        }
+    switch (search.filter) {
+        case 'track':
+            items = data.tracks.items;
+            break;
+        case 'album':
+            items = data.albums.items;
+            break;
+        case 'artist':
+            items = data.artists.items;
+            break;
     }
-    else if (search.type === "library") {
-        var titles = data.docs;
-        //console.log(titles);
-        //if (search.type === "titles") {
-        for (i = 0; i < titles.length; i++) {
-            var title = titles[i].title;
-            var coverID = titles[i].cover_i;
-            if (coverID) {
-                picture = "http://covers.openlibrary.org/b/ID/" + coverID + "-L.jpg";
+    for (i = 0; i < items.length; i++) {
+        picture = null;
+        if (search.filter === 'track') {
+            if (items[i].album.images[0]) {
+                //console.log(artists[i].images[0].url);
+                picture = items[i].album.images[0].url;
             } else {
                 picture = "img/SpotifyDefault.jpg";
             }
-            var link = "https://openlibrary.org" + titles[i].key;
-            var author = Array.isArray(titles[i].author_name) ? titles[i].author_name[0] : "Unknown";
-            var published = titles[i].first_publish_year ? titles[i].first_publish_year : "Unknown";
-            var book = {
-                title: title,
-                picture: picture,
-                link: link,
-                meta: {
-                    author: author,
-                    published: published
-                }
-            };
-            itemsHolder.push(book);
+        } else {
+            if (items[i].images[0]) {
+                //console.log(artists[i].images[0].url);
+                picture = items[i].images[0].url;
+            } else {
+                picture = "img/SpotifyDefault.jpg";
+            }
         }
+
+        var item = {
+            title: items[i].name,
+            picture: picture,
+            link: items[i].external_urls.spotify,
+            meta: {
+                //followers: followers
+            }
+        };
+
+        if (search.filter === 'artist') {
+            var followers = items[i].followers.total ? items[i].followers.total : "Unknown";
+            item.meta = {
+                followers: followers
+            };
+        }
+
+        if (search.filter === 'track') {
+            preview = items[i].preview_url;
+            artistString = "";
+
+            if ("artists" in items[i] && items[i].artists.constructor === Array) {
+                //console.log(items[i].artists.length);
+                for (a = 0; a < items[i].artists.length; a++) {
+                    //console.log("i: " + i + "a: " + a);
+                    artistURL = items[i].artists[a].id;
+                    artistName = items[i].artists[a].name;
+                    if (a > 0) {
+                        artistString += " and ";
+                    }
+                    artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
+                }
+            } else {
+                artistString = "Unknown";
+            }
+            item.preview = preview;
+            item.meta = {
+                artist: artistString
+            };
+        }
+
+        if (search.filter === 'track' || 'album') {
+            preview = items[i].preview_url;
+            artistString = "";
+
+            if ("artists" in items[i] && items[i].artists.constructor === Array) {
+                for (a = 0; a < items[i].artists.length; a++) {
+                    artistURL = items[i].artists[a].id;
+                    artistName = items[i].artists[a].name;
+                    if (a > 0) {
+                        artistString += " and ";
+                    }
+                    artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
+                }
+            } else {
+                artistString = "Unknown";
+            }
+            item.preview = preview;
+            item.meta.artist = artistString;
+        }
+
+        if (search.filter === 'album') {
+            var market;
+            var marketString = "";
+            if ("available_markets" in items[i] && items[i].available_markets.constructor === Array) {
+                for (a = 0; a < items[i].available_markets.length; a++) {
+                    market = items[i].available_markets[a];
+                    if (a > 0) {
+                        marketString += ", ";
+                    }
+                    marketString += market;
+                }
+            } else {
+                marketString = "Unknown";
+            }
+            item.meta.Markets = marketString;
+        }
+
+        itemsHolder.push(item);
+    }
+    return itemsHolder;
+}
+
+function getLibraryData(data, search) {
+    var itemsHolder = [];
+    var picture;
+    var i;
+    var titles = data.docs;
+    //console.log(titles);
+    //if (search.type === "titles") {
+    for (i = 0; i < titles.length; i++) {
+        var title = titles[i].title;
+        var coverID = titles[i].cover_i;
+        if (coverID) {
+            picture = "http://covers.openlibrary.org/b/ID/" + coverID + "-L.jpg";
+        } else {
+            picture = "img/SpotifyDefault.jpg";
+        }
+        var link = "https://openlibrary.org" + titles[i].key;
+        var author = Array.isArray(titles[i].author_name) ? titles[i].author_name[0] : "Unknown";
+        var published = titles[i].first_publish_year ? titles[i].first_publish_year : "Unknown";
+        var book = {
+            title: title,
+            picture: picture,
+            link: link,
+            meta: {
+                author: author,
+                published: published
+            }
+        };
+        itemsHolder.push(book);
     }
     return itemsHolder;
 }
@@ -337,7 +354,7 @@ function getItems(data, search) {
 function displayPictures(picturesHolder, query) {
     var html = "<ul>";
 
-    for(var index = 0; index<picturesHolder.length; index++) {
+    for (var index = 0; index < picturesHolder.length; index++) {
         html += "<li style='display:none'>";
         html += "<a href='" + picturesHolder[index].picture + "'>";
         html += "   <div class='item-image' style='background-image: url(" + picturesHolder[index].picture + ")'>";
