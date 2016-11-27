@@ -271,7 +271,7 @@ function getSpotifyData(data, search) {
             }
             var albumName = items[i].album.name;
             var albumHref = items[i].album.external_urls.spotify;
-            var albumString = "<a href='" + albumHref + "'>" + albumName + "</a>";
+            var albumString = "<a href='" + albumHref + "' target='_blank'>" + albumName + "</a>";
             item.preview = preview;
             item.meta = {
                 artist: artistString,
@@ -290,7 +290,7 @@ function getSpotifyData(data, search) {
                     if (a > 0) {
                         artistString += " and ";
                     }
-                    artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "'>" + artistName + "</a>";
+                    artistString += "<a href='https://play.spotify.com/artist/" + artistURL + "' target='_blank'>" + artistName + "</a>";
                 }
             } else {
                 artistString = "Unknown";
@@ -519,7 +519,7 @@ function addOverlay(items, index) {
     var $instructions = $("<p>Use arrow keys or buttons to cycle items, press escape or click the X to exit</p>");
     var $closeButton = $("<div id='closeBtn'>X</div>");
     var $mediaContainer = $("<div class='media-container' style='background: url(" + item.picture + ") no-repeat top; background-size:contain'></div>");
-    var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "'>Find out more</a></p>");
+    var $caption = $("<p>" + item.title + "</p>" + "" + "<p><a href='" + item.link + "' target='_blank'>Find out more</a></p>");
     var $meta = $(meta);
     var $preview = $(preview);
     var $replacementImage;
